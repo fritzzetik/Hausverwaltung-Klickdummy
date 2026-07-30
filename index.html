@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Interaktiver Klickdummy einer Hausverwaltungs-Fachapplikation mit Vorschreibungen, Zahlungen, Beschlüssen und Objektverwaltung.">
+<meta property="og:title" content="Hausverwaltung – Interaktiver Klickdummy">
+<meta property="og:description" content="Vorschreibungen, Zahlungen, Beschlüsse und Objektverwaltung interaktiv testen.">
+<meta property="og:image" content="https://fritzzetik.github.io/Hausverwaltung/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fritzzetik.github.io/Hausverwaltung/">
+<meta name="twitter:card" content="summary_large_image">
+<title>Klickdummy — Hausverwaltung</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f4f0;
+  --color-background-tertiary: #ebe9e1;
+  --color-background-info: #e6f1fb;
+  --color-background-warning: #faeeda;
+  --color-background-danger: #fcebeb;
+  --color-background-success: #eaf3de;
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #888780;
+  --color-text-info: #185fa5;
+  --color-text-warning: #854f0b;
+  --color-text-danger: #a32d2d;
+  --color-text-success: #3b6d11;
+  --color-border-tertiary: rgba(0, 0, 0, 0.10);
+  --color-border-secondary: rgba(0, 0, 0, 0.18);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary: #1f1f1d;
+    --color-background-secondary: #2c2c2a;
+    --color-background-tertiary: #161614;
+    --color-background-info: #042c53;
+    --color-background-warning: #412402;
+    --color-background-danger: #501313;
+    --color-background-success: #173404;
+    --color-text-primary: #f5f3ed;
+    --color-text-secondary: #b4b2a9;
+    --color-text-tertiary: #888780;
+    --color-text-info: #85b7eb;
+    --color-text-warning: #fac775;
+    --color-text-danger: #f09595;
+    --color-text-success: #97c459;
+    --color-border-tertiary: rgba(255, 255, 255, 0.12);
+    --color-border-secondary: rgba(255, 255, 255, 0.24);
+  }
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+body { min-height: 100vh; }
+.page-header {
+  background: var(--color-background-primary);
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  padding: 14px 20px;
+}
+.page-header-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  gap: 12px;
+}
+.page-header strong { font-weight: 500; }
+.page-content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+button {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 7px 12px;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background 120ms ease, transform 60ms ease;
+}
+button:hover { background: var(--color-background-secondary); }
+button:active { transform: scale(0.98); }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 7px 10px;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  outline: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--color-border-secondary); }
+h2, h3 { color: var(--color-text-primary); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.kd-shell { padding: 1rem 0; }
+.kd-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 12px; background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md); font-size: 12px;
+  color: var(--color-text-secondary); margin-bottom: 12px;
+}
+.kd-nav {
+  display: flex; gap: 4px; margin-bottom: 1.25rem; padding-bottom: 8px;
+  border-bottom: 0.5px solid var(--color-border-tertiary); flex-wrap: wrap;
+}
+.kd-nav button {
+  padding: 7px 11px; font-size: 13px; cursor: pointer; background: transparent;
+  border: 0.5px solid transparent; border-radius: var(--border-radius-md);
+  color: var(--color-text-secondary);
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.kd-nav button.active {
+  background: var(--color-background-secondary); color: var(--color-text-primary);
+  font-weight: 500; border-color: var(--color-border-secondary);
+}
+.kd-nav button:hover:not(.active) { background: var(--color-background-secondary); }
+.kd-card {
+  background: var(--color-background-primary); border-radius: var(--border-radius-lg);
+  border: 0.5px solid var(--color-border-tertiary); padding: 0.9rem 1rem;
+}
+.kd-metric {
+  background: var(--color-background-secondary); border-radius: var(--border-radius-md);
+  padding: 0.7rem 0.85rem;
+}
+.kd-row {
+  display: flex; align-items: center; gap: 8px; padding: 9px 0;
+  border-top: 0.5px solid var(--color-border-tertiary); cursor: pointer;
+}
+.kd-row:first-of-type { border-top: none; padding-top: 4px; }
+.kd-row:hover { background: var(--color-background-secondary); }
+.kd-pill {
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  font-weight: 500; white-space: nowrap;
+}
+.kd-label { font-size: 11px; color: var(--color-text-secondary); margin: 0 0 4px; }
+.kd-num { font-size: 20px; font-weight: 500; margin: 0; line-height: 1.1; }
+.kd-title { font-size: 15px; font-weight: 500; margin: 0; }
+.kd-key { font-size: 12px; color: var(--color-text-secondary); }
+.kd-val { font-size: 13px; }
+.kd-input, .kd-select {
+  width: 100%; padding: 6px 9px; font-size: 12px;
+  border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md);
+  background: var(--color-background-primary); color: var(--color-text-primary);
+}
+.kd-primary {
+  background: var(--color-text-info); color: var(--color-background-primary);
+  padding: 7px 13px; font-size: 13px; border: 0; border-radius: var(--border-radius-md);
+  cursor: pointer; font-weight: 500;
+}
+.kd-primary:hover { filter: brightness(1.08); }
+.kd-pdf {
+  background: var(--color-background-secondary); border-radius: var(--border-radius-md);
+  height: 180px; display: flex; align-items: center; justify-content: center;
+  color: var(--color-text-tertiary); font-size: 12px; flex-direction: column; gap: 6px;
+}
+.kd-toast {
+  font-size: 12px; color: var(--color-text-info); background: var(--color-background-info);
+  padding: 8px 12px; border-radius: var(--border-radius-md); margin-bottom: 12px; display: none;
+}
+.kd-view { display: none; }
+.kd-view.active { display: block; }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="page-header-inner">
+    <strong>Klickdummy — Hausverwaltung</strong>
+    <span style="color: var(--color-text-secondary);">Prototyp · 8 Ansichten</span>
+  </div>
+</header>
+
+<main class="page-content">
+
+<h2 class="sr-only">Klickdummy für die Hausverwaltung mit acht Ansichten: Portfolio, Liegenschafts-Cockpit, Beleg-Freigabe, Jahresabrechnung, Vorschreibungslauf, Umlaufbeschluss, Papier-Rücklauf und Eigentümer-Portal.</h2>
+
+<div class="kd-shell">
+
+<div class="kd-banner">
+<span style="display: flex; align-items: center; gap: 6px;"><i class="ti ti-flask" aria-hidden="true"></i> Klickdummy — Hausverwaltung</span>
+<span>PostgreSQL-MVP · 8 Ansichten</span>
+</div>
+
+<div class="kd-nav" id="kd-nav">
+<button data-view="portfolio" class="active"><i class="ti ti-buildings" aria-hidden="true"></i> Portfolio</button>
+<button data-view="cockpit"><i class="ti ti-home" aria-hidden="true"></i> Liegenschaft</button>
+<button data-view="beleg"><i class="ti ti-file-invoice" aria-hidden="true"></i> Beleg-Freigabe</button>
+<button data-view="abrechnung"><i class="ti ti-report-money" aria-hidden="true"></i> Abrechnung</button>
+<button data-view="vorschreibung"><i class="ti ti-receipt-euro" aria-hidden="true"></i> Vorschreibungen</button>
+<button data-view="beschluss"><i class="ti ti-gavel" aria-hidden="true"></i> Umlaufbeschluss</button>
+<button data-view="portal"><i class="ti ti-user-circle" aria-hidden="true"></i> Portal-Sicht</button>
+</div>
+
+<div class="kd-toast" id="kd-toast"></div>
+
+<section class="kd-view active" data-view="portfolio">
+<div style="margin-bottom: 1rem;">
+<h2 style="margin: 0 0 4px; font-size: 18px; font-weight: 500;">Portfolio</h2>
+<div style="font-size: 13px; color: var(--color-text-secondary);">4 Liegenschaften · 80 Objekte · 15 offene Workitems</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-metric"><p class="kd-label">Liegenschaften</p><p class="kd-num">4</p></div>
+<div class="kd-metric"><p class="kd-label">Aktive Bestände</p><p class="kd-num">112</p></div>
+<div class="kd-metric"><p class="kd-label">Belege offen</p><p class="kd-num" style="color: var(--color-text-warning);">23</p></div>
+<div class="kd-metric"><p class="kd-label">Mieterträge YTD</p><p class="kd-num">€ 612k</p></div>
+</div>
+<div class="kd-card">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+<h3 class="kd-title">Liegenschaften</h3>
+<span style="font-size: 11px; color: var(--color-text-secondary);">sortiert nach offenen Workitems</span>
+</div>
+<div class="kd-row" onclick="goTo('cockpit')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 14px; font-weight: 500;">Mariahilfer Straße 123, 1060 Wien</div><div style="font-size: 11px; color: var(--color-text-secondary);">EZ 4521 / KG Mariahilf · 24 Objekte · WEG</div></div>
+<span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">7 offen</span>
+</div>
+<div class="kd-row" onclick="goTo('cockpit')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 14px; font-weight: 500;">Hetzendorfer Straße 200, 1120 Wien</div><div style="font-size: 11px; color: var(--color-text-secondary);">EZ 8842 / KG Meidling · 38 Objekte · WEG</div></div>
+<span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">5 offen</span>
+</div>
+<div class="kd-row" onclick="goTo('cockpit')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 14px; font-weight: 500;">Wipplinger Straße 45, 1010 Wien</div><div style="font-size: 11px; color: var(--color-text-secondary);">EZ 1234 / KG Innere Stadt · 12 Objekte · Zinshaus</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">2 offen</span>
+</div>
+<div class="kd-row" onclick="goTo('cockpit')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 14px; font-weight: 500;">Schottenring 8, 1010 Wien</div><div style="font-size: 11px; color: var(--color-text-secondary);">EZ 5678 / KG Innere Stadt · 6 Geschäftslokale · Gewerbe</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">1 offen</span>
+</div>
+</div>
+</section>
+
+<section class="kd-view" data-view="cockpit">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px;">
+<span style="cursor: pointer; color: var(--color-text-info);" onclick="goTo('portfolio')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Portfolio</span>
+<span style="opacity: 0.5;">/</span><span>Mariahilfer Straße 123</span>
+</div>
+<div style="margin-bottom: 1.1rem;">
+<h2 style="margin: 0 0 4px; font-size: 18px; font-weight: 500;">Mariahilfer Straße 123, 1060 Wien</h2>
+<div style="font-size: 13px; color: var(--color-text-secondary);">EZ 4521 · KG Mariahilf · 24 Objekte · WEG-Verwaltung</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-metric"><p class="kd-label">Objekte</p><p class="kd-num">24</p></div>
+<div class="kd-metric"><p class="kd-label">Neue Meldungen</p><p class="kd-num" style="color: var(--color-text-warning);">3</p></div>
+<div class="kd-metric"><p class="kd-label">Workitems</p><p class="kd-num" style="color: var(--color-text-warning);">7</p></div>
+<div class="kd-metric"><p class="kd-label">Rücklage</p><p class="kd-num">€ 84.320</p></div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-card">
+<h3 class="kd-title" style="margin-bottom: 8px;">Offene Workitems</h3>
+<div class="kd-row" onclick="toast('MeldeApp-Meldung HVM-7A93F2: Wasseraustritt im Stiegenhaus, von Mieter Top 8 gemeldet; direkt synchronisiert und der Allgemeinfläche zugeordnet.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Wasseraustritt Stiegenhaus prüfen</div><div style="font-size: 11px; color: var(--color-text-secondary);">MeldeApp · Allgemeinfläche · dringend</div></div>
+<span class="kd-pill" style="background: var(--color-background-danger); color: var(--color-text-danger);">neu</span>
+</div>
+<div class="kd-row" onclick="goTo('vorschreibung')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Vorschreibungslauf Juni freigeben</div><div style="font-size: 11px; color: var(--color-text-secondary);">24 Entwürfe · 1 Prüffall · € 25.640</div></div>
+<span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">heute</span>
+</div>
+<div class="kd-row" onclick="goTo('beleg')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Hausstrom April freigeben</div><div style="font-size: 11px; color: var(--color-text-secondary);">Wien Energie · € 2.341</div></div>
+<span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">heute</span>
+</div>
+<div class="kd-row" onclick="toast('Indexanpassung: würde Mietvertrag Top 5 öffnen, neuen VPI-Stand berechnen und Anhebungsschreiben generieren.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Indexanpassung Top 5</div><div style="font-size: 11px; color: var(--color-text-secondary);">VPI April · +4,2 %</div></div>
+<span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">in 3 T.</span>
+</div>
+<div class="kd-row" onclick="toast('Versicherungsverlängerung: würde Polizze 1234 öffnen, Angebote anfordern und Beschluss vorbereiten.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Versicherung läuft ab</div><div style="font-size: 11px; color: var(--color-text-secondary);">Wiener Städtische · Polizze 1234</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">30.06.</span>
+</div>
+<div class="kd-row" onclick="toast('Mahnverfahren: würde Top 8 Bestandsakt öffnen, Saldo prüfen und Mahnschreiben Stufe 2 vorbereiten.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Mietrückstand Top 8</div><div style="font-size: 11px; color: var(--color-text-secondary);">2 Monate · Mahnstufe 1</div></div>
+<span class="kd-pill" style="background: var(--color-background-danger); color: var(--color-text-danger);">überfällig</span>
+</div>
+<div class="kd-row" onclick="goTo('beschluss-papier')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Papier-Rücklauf Top 7 prüfen</div><div style="font-size: 11px; color: var(--color-text-secondary);">Beschluss 2026/03 · Pötzelsberger</div></div>
+<span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">heute</span>
+</div>
+</div>
+<div class="kd-card">
+<h3 class="kd-title" style="margin-bottom: 8px;">Laufende Vorgänge</h3>
+<div class="kd-row" onclick="goTo('abrechnung')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Jahresabrechnung 2025</div><div style="font-size: 11px; color: var(--color-text-secondary);">287 Belege · 3 Schlüssel</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">Entwurf</span>
+</div>
+<div class="kd-row" onclick="toast('Sanierungsprojekt: würde Kostenplan, Angebote, Finanzierungsbeschluss und Rücklagen-Entnahme öffnen.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Sanierung Liftanlage</div><div style="font-size: 11px; color: var(--color-text-secondary);">Beschluss 03.03. · € 48.000</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">Umsetzung</span>
+</div>
+<div class="kd-row" onclick="toast('Versammlung: würde Tagesordnung, Einladungsstatus, Stimmrechtsliste und Protokollvorlage öffnen.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Eigentümerversammlung</div><div style="font-size: 11px; color: var(--color-text-secondary);">12.06.2026 · Einladung versendet</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">Vorbereitung</span>
+</div>
+<div class="kd-row" onclick="toast('Eigentümerwechsel: würde Stichtagsabrechnung Huber/Bauer mit aliquoter Aufteilung der laufenden Periode öffnen.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Eigentümerwechsel Top 14</div><div style="font-size: 11px; color: var(--color-text-secondary);">Huber → Bauer · Stichtag 01.05.</div></div>
+<span class="kd-pill" style="background: var(--color-background-success); color: var(--color-text-success);">Abrechnung</span>
+</div>
+<div class="kd-row" onclick="goTo('beschluss')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Umlaufbeschluss 2026/03 Liftsteuerung</div><div style="font-size: 11px; color: var(--color-text-secondary);">14/18 Stimmen · Frist 19.05.</div></div>
+<span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">Abstimmung</span>
+</div>
+</div>
+</div>
+<div class="kd-card">
+<h3 class="kd-title" style="margin: 0 0 10px;">Letzte Belege</h3>
+<table style="width: 100%; font-size: 13px; table-layout: fixed; border-collapse: collapse;">
+<colgroup><col style="width: 78px;"><col style="width: 56px;"><col><col style="width: 80px;"><col style="width: 88px;"></colgroup>
+<thead><tr style="font-size: 11px; color: var(--color-text-secondary); text-align: left;"><th style="padding: 4px 0; font-weight: 400;">Typ</th><th style="font-weight: 400;">Datum</th><th style="font-weight: 400;">Partner / Bezug</th><th style="font-weight: 400; text-align: right;">Betrag</th><th style="font-weight: 400;">Status</th></tr></thead>
+<tbody>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="goTo('beleg')">
+<td style="padding: 8px 0;"><span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">Eingang</span></td>
+<td>12.05.</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Wien Energie · Hausstrom</td>
+<td style="text-align: right;">€ 2.341</td><td style="color: var(--color-text-warning); font-size: 12px;">offen</td>
+</tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Belegdetail OTIS: gebuchte Rechnung mit interner Beleg-ID und Buchungsreferenz zur Buchhaltung.')">
+<td style="padding: 8px 0;"><span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">Eingang</span></td>
+<td>11.05.</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">OTIS · Liftwartung Mai</td>
+<td style="text-align: right;">€ 580</td><td style="color: var(--color-text-success); font-size: 12px;">gebucht</td>
+</tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Ausgangsrechnung Mietvorschreibung: extern erzeugt; PDF-Referenz, Prüfsumme und Metadaten im Dokumentmodul gespeichert.')">
+<td style="padding: 8px 0;"><span class="kd-pill" style="background: var(--color-background-success); color: var(--color-text-success);">Ausgang</span></td>
+<td>10.05.</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Mietvorschreibung Top 5 Müller</td>
+<td style="text-align: right;">€ 850</td><td style="color: var(--color-text-success); font-size: 12px;">bezahlt</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="kd-view" data-view="beleg">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px;">
+<span style="cursor: pointer; color: var(--color-text-info);" onclick="goTo('portfolio')">Portfolio</span><span style="opacity: 0.5;">/</span>
+<span style="cursor: pointer; color: var(--color-text-info);" onclick="goTo('cockpit')">Mariahilfer 123</span><span style="opacity: 0.5;">/</span><span>Workitem</span>
+</div>
+<div style="margin-bottom: 1.1rem;">
+<h2 style="margin: 0 0 4px; font-size: 18px; font-weight: 500;">Eingangsrechnung freigeben</h2>
+<div style="font-size: 13px; color: var(--color-text-secondary);">Workitem 04-2026/127 · zugewiesen: Sie · fällig heute</div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-card">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;"><h3 class="kd-title">Beleg</h3><span style="font-size: 11px; color: var(--color-text-secondary);">PDF · 2 Seiten</span></div>
+<div class="kd-pdf"><i class="ti ti-file-text" style="font-size: 28px;" aria-hidden="true"></i><span>Wien-Energie-AR-2026-04.pdf</span><span style="font-size: 11px;">Vorschau im Klickdummy ausgeblendet</span></div>
+<div style="margin-top: 10px; font-size: 12px;">
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">Lieferant</span><span class="kd-val">Wien Energie GmbH</span></div>
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">UID</span><span class="kd-val">ATU63615138</span></div>
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">Beleg-Nr.</span><span class="kd-val">WE-2026-04-12345</span></div>
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">Belegdatum</span><span class="kd-val">11.05.2026</span></div>
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">Netto</span><span class="kd-val">€ 1.950,83</span></div>
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">USt 20%</span><span class="kd-val">€ 390,17</span></div>
+<div style="display: flex; justify-content: space-between; padding: 6px 0 3px; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 4px;"><span class="kd-key" style="font-weight: 500;">Brutto</span><span class="kd-val" style="font-weight: 500;">€ 2.341,00</span></div>
+</div>
+</div>
+<div class="kd-card">
+<h3 class="kd-title" style="margin: 0 0 10px;">Buchungsinformation</h3>
+<div style="display: flex; flex-direction: column; gap: 9px;">
+<div><label class="kd-label">Liegenschaft (Kostenstelle)</label><select class="kd-select"><option>4521 · Mariahilfer Straße 123</option></select></div>
+<div><label class="kd-label">Kostenart</label><select class="kd-select"><option>Strom Allgemeinflächen</option><option>Strom Lift</option><option>Strom Heizung</option></select></div>
+<div><label class="kd-label">Verteilungsschlüssel</label><select class="kd-select"><option>MEA §32 WEG</option><option>Beschluss 06/24 — EG ausgenommen</option></select></div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+<div><label class="kd-label">Periode</label><select class="kd-select"><option>April 2026</option></select></div>
+<div><label class="kd-label">USt-Code</label><select class="kd-select"><option>3300 · VSt 20%</option></select></div>
+</div>
+<div><label class="kd-label">Fälligkeit</label><input class="kd-input" value="25.05.2026"></div>
+</div>
+</div>
+</div>
+<div class="kd-card" style="margin-bottom: 1.1rem;">
+<h3 class="kd-title" style="margin: 0 0 8px;">Hinweise aus dem System</h3>
+<div style="font-size: 12px; line-height: 1.6;">
+<div style="display: flex; gap: 8px; align-items: flex-start; padding: 4px 0;"><i class="ti ti-check" style="color: var(--color-text-success); margin-top: 2px;" aria-hidden="true"></i><span>Lieferant erkannt aus Stammdaten · 12 Rechnungen letzten 12 Monate · Zahlungsdurchschnitt 18 Tage</span></div>
+<div style="display: flex; gap: 8px; align-items: flex-start; padding: 4px 0;"><i class="ti ti-check" style="color: var(--color-text-success); margin-top: 2px;" aria-hidden="true"></i><span>UID gültig laut letzter Prüfung 10.05.2026</span></div>
+<div style="display: flex; gap: 8px; align-items: flex-start; padding: 4px 0;"><i class="ti ti-alert-triangle" style="color: var(--color-text-warning); margin-top: 2px;" aria-hidden="true"></i><span>Betrag +18 % über Vorjahres-April · außerhalb des Schwellwerts · zweite Freigabe empfohlen</span></div>
+</div>
+</div>
+<div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+<button onclick="toast('Korrektur an Buchhaltung: Beleg bleibt offen, Buchungsinformation wird zur Klärung markiert.')">Korrektur anfordern</button>
+<button onclick="toast('Ablehnen: Beleg geht an Lieferanten zurück, Workitem geschlossen, keine Buchung.')">Ablehnen</button>
+<button class="kd-primary" onclick="toast('Freigegeben. Buchungsinformation geht an die Buchhaltung; interne Beleg-ID bleibt die Referenz im Fachsystem.'); setTimeout(function(){goTo('cockpit')}, 1500);">Freigeben &amp; an Buchhaltung</button>
+</div>
+</section>
+
+<section class="kd-view" data-view="abrechnung">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px;">
+<span style="cursor: pointer; color: var(--color-text-info);" onclick="goTo('cockpit')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Mariahilfer 123</span>
+<span style="opacity: 0.5;">/</span><span>Jahresabrechnung 2025</span>
+</div>
+<div style="margin-bottom: 1.1rem;">
+<h2 style="margin: 0 0 4px; font-size: 18px; font-weight: 500; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">Jahresabrechnung 2025<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info); font-size: 12px;">Entwurf</span></h2>
+<div style="font-size: 13px; color: var(--color-text-secondary);">Periode 01.01.2025 – 31.12.2025 · 287 Belege · Stand 12.05.2026</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-metric"><p class="kd-label">Gesamtkosten</p><p class="kd-num">€ 156.480</p></div>
+<div class="kd-metric"><p class="kd-label">Heizung</p><p class="kd-num">€ 48.230</p></div>
+<div class="kd-metric"><p class="kd-label">Rücklage zugeführt</p><p class="kd-num">€ 24.000</p></div>
+<div class="kd-metric"><p class="kd-label">Akonti</p><p class="kd-num">€ 148.200</p></div>
+</div>
+<div class="kd-card" style="margin-bottom: 1.1rem;">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;"><h3 class="kd-title">Belegverzeichnis nach Kostenart</h3><span style="font-size: 11px; color: var(--color-text-secondary);">Position verlinkt auf Originalbelege</span></div>
+<table style="width: 100%; font-size: 13px; table-layout: fixed; border-collapse: collapse;">
+<colgroup><col><col style="width: 56px;"><col style="width: 88px;"><col style="width: 156px;"></colgroup>
+<thead><tr style="font-size: 11px; color: var(--color-text-secondary); text-align: left;"><th style="padding: 4px 0; font-weight: 400;">Kostenart</th><th style="font-weight: 400; text-align: right;">Belege</th><th style="font-weight: 400; text-align: right;">Summe</th><th style="font-weight: 400;">Verteilungsschlüssel</th></tr></thead>
+<tbody>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('287 zugeordnete Originalbelege dieser Kostenart — öffnet die gefilterte Belegliste im Fachsystem.')"><td style="padding: 7px 0;">Allgemeinstrom</td><td style="text-align: right;">12</td><td style="text-align: right;">€ 28.092</td><td style="font-size: 12px; color: var(--color-text-secondary);">MEA · §32 WEG</td></tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Belege Wasser/Kanal: Stadt Wien-Vorschreibungen mit Verbrauchsdaten.')"><td style="padding: 7px 0;">Wasser/Kanal</td><td style="text-align: right;">4</td><td style="text-align: right;">€ 12.840</td><td style="font-size: 12px; color: var(--color-text-secondary);">Verbrauch</td></tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Heizkostenabrechnung Wärmedienst — Verbrauchsanteil je Top.')"><td style="padding: 7px 0;">Heizung (Verbrauch)</td><td style="text-align: right;">1</td><td style="text-align: right;">€ 39.730</td><td style="font-size: 12px; color: var(--color-text-secondary);">HeizKG · Verbrauch</td></tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Grundkosten Heizung — fixer Anteil über alle Tops.')"><td style="padding: 7px 0;">Heizung (Grundkosten)</td><td style="text-align: right;">1</td><td style="text-align: right;">€ 8.500</td><td style="font-size: 12px; color: var(--color-text-secondary);">HeizKG · Grundkosten</td></tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Liftkosten — EG-Tops sind per Beschluss vom Juni 2024 ausgenommen.')"><td style="padding: 7px 0;">Lift</td><td style="text-align: right;">24</td><td style="text-align: right;">€ 8.520</td><td style="font-size: 12px; color: var(--color-text-secondary);">MEA o. EG · Beschluss 06/24</td></tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);"><td style="padding: 7px 0;">Versicherung</td><td style="text-align: right;">4</td><td style="text-align: right;">€ 6.200</td><td style="font-size: 12px; color: var(--color-text-secondary);">MEA</td></tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);"><td style="padding: 7px 0;">Reparaturen Allgemein</td><td style="text-align: right;">31</td><td style="text-align: right;">€ 14.200</td><td style="font-size: 12px; color: var(--color-text-secondary);">MEA</td></tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);"><td style="padding: 7px 0;">Rücklagenzuführung</td><td style="text-align: right;">—</td><td style="text-align: right;">€ 24.000</td><td style="font-size: 12px; color: var(--color-text-secondary);">MEA</td></tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);"><td style="padding: 7px 0;">Verwaltungshonorar</td><td style="text-align: right;">12</td><td style="text-align: right;">€ 14.398</td><td style="font-size: 12px; color: var(--color-text-secondary);">MEA</td></tr>
+</tbody>
+</table>
+</div>
+<div class="kd-card" style="margin-bottom: 1.1rem;">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;"><h3 class="kd-title">Vorschau Einzelabrechnungen</h3><span style="font-size: 11px; color: var(--color-text-secondary);">3 von 18 Eigentümern</span></div>
+<div class="kd-row" onclick="toast('Einzelabrechnung Wagner GmbH öffnen — Geschäftslokal mit USt-Option, Differenz nach Optionssaldierung.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Wagner GmbH (Top 12, Geschäft)</div><div style="font-size: 11px; color: var(--color-text-secondary);">234/3456 · USt-optiert</div></div>
+<div style="text-align: right;"><div style="font-size: 13px; font-weight: 500;">€ 10.594</div><div style="font-size: 11px; color: var(--color-text-success);">+ € 412 Guthaben</div></div>
+</div>
+<div class="kd-row" onclick="goTo('portal')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Müller, Anna (Top 5)</div><div style="font-size: 11px; color: var(--color-text-secondary);">145/3456 · Portal-Sicht ansehen</div></div>
+<div style="text-align: right;"><div style="font-size: 13px; font-weight: 500;">€ 6.562</div><div style="font-size: 11px; color: var(--color-text-danger);">− € 318 Nachzahlung</div></div>
+</div>
+<div class="kd-row" onclick="toast('Eigentümerwechsel Top 14: aliquote Aufteilung Jan-Apr für Huber, Mai-Dez für Bauer.')">
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Huber, Klaus (Top 14)</div><div style="font-size: 11px; color: var(--color-text-secondary);">88/3456 · bis 30.04. Eigentümer</div></div>
+<div style="text-align: right;"><div style="font-size: 13px; font-weight: 500;">€ 1.328</div><div style="font-size: 11px; color: var(--color-text-secondary);">aliquot Jan–Apr</div></div>
+</div>
+</div>
+<div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+<button onclick="toast('PDF-Vorschau: Gesamtabrechnung + 18 Einzelabrechnungen.')">PDF-Vorschau</button>
+<button onclick="toast('Status Entwurf → Geprüft. Workitem an Geschäftsführung zur Freigabe.')">Zur Prüfung</button>
+<button class="kd-primary" onclick="toast('Freigegeben. Einzelabrechnungen am Personenakt verlinkt, Sichtbarkeit im Portal aktiv. Frist §34 WEG läuft.'); setTimeout(function(){goTo('portal')}, 1500);">Freigeben &amp; Portal</button>
+</div>
+</section>
+
+<section class="kd-view" data-view="vorschreibung">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px;"><span style="cursor: pointer; color: var(--color-text-info);" onclick="goTo('cockpit')"><i class="ti ti-arrow-left"></i> Mariahilfer Straße 123</span><span style="opacity: 0.5;">/</span><span>Vorschreibungslauf 06/2026</span></div>
+<div style="margin-bottom: 1.1rem;"><h2 style="margin: 0 0 4px; font-size: 18px; font-weight: 500;">Vorschreibungslauf Juni 2026 <span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">Prüfung</span></h2><div style="font-size: 13px; color: var(--color-text-secondary);">Stichtag 20.05.2026 · Fälligkeit 05.06.2026 · Berechnungsgrundlagen eingefroren</div></div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.1rem;"><div class="kd-metric"><p class="kd-label">Entwürfe</p><p class="kd-num">24</p></div><div class="kd-metric"><p class="kd-label">Prüffälle</p><p class="kd-num" style="color: var(--color-text-warning);">1</p></div><div class="kd-metric"><p class="kd-label">Gesamtsumme</p><p class="kd-num">€ 25.640</p></div><div class="kd-metric"><p class="kd-label">gegenüber Mai</p><p class="kd-num">+1,8 %</p></div></div>
+<div style="display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-card"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;"><h3 class="kd-title">Entwurfsvorschau</h3><span style="font-size: 11px; color: var(--color-text-secondary);">PDF erst nach Freigabe</span></div><table style="width: 100%; font-size: 12px; border-collapse: collapse;"><thead><tr style="color: var(--color-text-secondary); text-align: left;"><th style="font-weight: 400; padding: 4px 0;">Empfänger</th><th style="font-weight: 400;">Bezug</th><th style="font-weight: 400; text-align: right;">Betrag</th><th style="font-weight: 400;">Prüfung</th></tr></thead><tbody><tr style="border-top: 0.5px solid var(--color-border-tertiary);"><td style="padding: 8px 0;">Anna Müller</td><td>Top 5</td><td style="text-align: right;">€ 850</td><td style="color: var(--color-text-success);">bereit</td></tr><tr style="border-top: 0.5px solid var(--color-border-tertiary);"><td style="padding: 8px 0;">Marko Novak</td><td>Top 9</td><td style="text-align: right;">€ 1.020</td><td style="color: var(--color-text-warning); cursor: pointer;" onclick="toast('Prüffall: Betrag liegt 20 % über Mai. Ursache: neue Akontoposition Heizung.')">+20 % prüfen</td></tr><tr style="border-top: 0.5px solid var(--color-border-tertiary);"><td style="padding: 8px 0;">Wagner GmbH</td><td>Top 12</td><td style="text-align: right;">€ 1.440</td><td style="color: var(--color-text-success);">bereit</td></tr><tr style="border-top: 0.5px solid var(--color-border-tertiary);"><td style="padding: 8px 0;">Pötzelsberger</td><td>Top 7</td><td style="text-align: right;">€ 857</td><td style="color: var(--color-text-success);">bereit</td></tr></tbody></table></div>
+<div class="kd-card"><h3 class="kd-title" style="margin-bottom: 10px;">Prüflauf</h3><div style="font-size: 12px; display: grid; gap: 8px;"><div><i class="ti ti-check" style="color: var(--color-text-success);"></i> 24 gültige Empfänger</div><div><i class="ti ti-check" style="color: var(--color-text-success);"></i> Summe vollständig verteilt</div><div><i class="ti ti-check" style="color: var(--color-text-success);"></i> Fälligkeit und Bankverbindung vorhanden</div><div><i class="ti ti-alert-triangle" style="color: var(--color-text-warning);"></i> 1 Betragsabweichung bestätigen</div></div><div style="margin-top: 14px; padding-top: 12px; border-top: 0.5px solid var(--color-border-tertiary); font-size: 11px; color: var(--color-text-secondary);">Freigabe erzeugt nummerierte PDFs mit Prüfsumme. Korrekturen erfolgen per Storno oder Ersatzvorschreibung.</div></div></div>
+<div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;"><button onclick="toast('Entwürfe als Kontrollliste exportiert.')">Kontrollliste</button><button onclick="toast('Prüffall Novak bestätigt und protokolliert.')">Prüffall bestätigen</button><button class="kd-primary" onclick="toast('24 Vorschreibungen freigegeben · PDFs erzeugt · im Portal veröffentlicht.'); setTimeout(function(){goTo('portal')}, 1500);">Freigeben &amp; im Portal veröffentlichen</button></div>
+</section>
+<section class="kd-view" data-view="beschluss">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px;">
+<span style="cursor: pointer; color: var(--color-text-info);" onclick="goTo('cockpit')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Mariahilfer 123</span>
+<span style="opacity: 0.5;">/</span><span>Umlaufbeschluss 2026/03</span>
+</div>
+<div style="margin-bottom: 1.1rem;">
+<h2 style="margin: 0 0 4px; font-size: 18px; font-weight: 500; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">Umlaufbeschluss 2026/03 — Liftmodernisierung Steuerung<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info); font-size: 12px;">Abstimmung läuft</span></h2>
+<div style="font-size: 13px; color: var(--color-text-secondary);">Versendet 28.04.2026 · Frist 19.05.2026 · 18 Eigentümer · Mehrheit einfach (MEA)</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-metric"><p class="kd-label">Zugestellt</p><p class="kd-num">18 / 18</p></div>
+<div class="kd-metric"><p class="kd-label">Stimmen erhalten</p><p class="kd-num">14 / 18</p></div>
+<div class="kd-metric"><p class="kd-label">Ja-Anteile</p><p class="kd-num" style="color: var(--color-text-success);">2.184/3.456</p></div>
+<div class="kd-metric"><p class="kd-label">Auslagen-Posten</p><p class="kd-num">2</p></div>
+</div>
+
+<div class="kd-card" style="margin-bottom: 1.1rem;">
+<h3 class="kd-title" style="margin: 0 0 8px;">Beschluss-Stammdaten</h3>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px;">
+<div><span class="kd-key">Gegenstand:</span> <span class="kd-val">Modernisierung Lift-Steuerung Schindler</span></div>
+<div><span class="kd-key">Auftragssumme:</span> <span class="kd-val">€ 18.400 brutto</span></div>
+<div><span class="kd-key">Mehrheits-Erfordernis:</span> <span class="kd-val">einfach (MEA-Mehrheit)</span></div>
+<div><span class="kd-key">Anteils-Basis-Stichtag:</span> <span class="kd-val">28.04.2026</span></div>
+<div><span class="kd-key">Frist Stimmabgabe:</span> <span class="kd-val">19.05.2026 (heute + 7 T.)</span></div>
+<div><span class="kd-key">Finanzierung:</span> <span class="kd-val">Rücklage</span></div>
+</div>
+</div>
+
+<div class="kd-card" style="margin-bottom: 1.1rem;">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+<h3 class="kd-title">Versand-Liste &amp; Stimmen</h3>
+<span style="font-size: 11px; color: var(--color-text-secondary);">Status pro Eigentümer · Stimme aus QR-Zuordnung des Rücklauf-Dokuments</span>
+</div>
+<table style="width: 100%; font-size: 12px; table-layout: fixed; border-collapse: collapse;">
+<colgroup><col style="width: 48px;"><col><col style="width: 64px;"><col style="width: 90px;"><col style="width: 78px;"><col style="width: 76px;"></colgroup>
+<thead><tr style="font-size: 11px; color: var(--color-text-secondary); text-align: left;">
+<th style="padding: 4px 0; font-weight: 400;">Top</th>
+<th style="font-weight: 400;">Eigentümer</th>
+<th style="font-weight: 400; text-align: right;">Anteil</th>
+<th style="font-weight: 400;">Zustellung</th>
+<th style="font-weight: 400;">Signatur</th>
+<th style="font-weight: 400;">Stimme</th>
+</tr></thead>
+<tbody>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Rücklauf Top 5: QES-signiertes PDF, A-Trust-Zertifikat valide, Zeitstempel 02.05. 09:14, automatisch zugeordnet via QR.')">
+<td style="padding: 7px 0;">5</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Müller, Anna</td>
+<td style="text-align: right;">145/3456</td>
+<td style="color: var(--color-text-secondary);">Portal · 28.04.</td>
+<td><span class="kd-pill" style="background: var(--color-background-success); color: var(--color-text-success);">QES ✓</span></td>
+<td style="color: var(--color-text-success); font-weight: 500;">Ja</td>
+</tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Rücklauf Top 8: QES-signiertes PDF, Zeitstempel 30.04. 14:22.')">
+<td style="padding: 7px 0;">8</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Steiner, Maria</td>
+<td style="text-align: right;">98/3456</td>
+<td style="color: var(--color-text-secondary);">Portal · 28.04.</td>
+<td><span class="kd-pill" style="background: var(--color-background-success); color: var(--color-text-success);">QES ✓</span></td>
+<td style="color: var(--color-text-success); font-weight: 500;">Ja</td>
+</tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Top 12 Wagner GmbH: Geschäftslokal, Rücklauf per Mail (PDF mit QES), QR-Code automatisch gematcht.')">
+<td style="padding: 7px 0;">12</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Wagner GmbH</td>
+<td style="text-align: right;">234/3456</td>
+<td style="color: var(--color-text-secondary);">Mail · 28.04.</td>
+<td><span class="kd-pill" style="background: var(--color-background-success); color: var(--color-text-success);">QES ✓</span></td>
+<td style="color: var(--color-text-success); font-weight: 500;">Ja</td>
+</tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Top 14 Bauer: Eigentümer seit 01.05., am Versand-Stichtag 28.04. noch Huber — Stimme zählt für Huber, Anteils-Schnappschuss eingefroren.')">
+<td style="padding: 7px 0;">14</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Huber, Klaus *</td>
+<td style="text-align: right;">88/3456</td>
+<td style="color: var(--color-text-secondary);">Portal · 28.04.</td>
+<td><span class="kd-pill" style="background: var(--color-background-success); color: var(--color-text-success);">QES ✓</span></td>
+<td style="color: var(--color-text-danger); font-weight: 500;">Nein</td>
+</tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="goTo('beschluss-papier')">
+<td style="padding: 7px 0;">7</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Pötzelsberger, Franz</td>
+<td style="text-align: right;">132/3456</td>
+<td style="color: var(--color-text-secondary);">Post-Einschr. · 28.04.</td>
+<td><span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">Papier-Rücklauf</span></td>
+<td style="color: var(--color-text-warning); font-weight: 500;">prüfen</td>
+</tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Top 9 Novak: Portal-Zustellung am 28.04., bisher keine Stimme abgegeben — Erinnerung am 16.05. geplant.')">
+<td style="padding: 7px 0;">9</td><td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Novak, Petra</td>
+<td style="text-align: right;">112/3456</td>
+<td style="color: var(--color-text-secondary);">Portal · 28.04.</td>
+<td style="color: var(--color-text-tertiary);">—</td>
+<td style="color: var(--color-text-tertiary);">ausstehend</td>
+</tr>
+<tr style="cursor: pointer; border-top: 0.5px solid var(--color-border-tertiary);" onclick="toast('Weitere 12 Eigentümer ausblenden — Liste in voller Anwendung filterbar nach Status.')">
+<td colspan="6" style="padding: 7px 0; color: var(--color-text-secondary); text-align: center; font-size: 11px;">… 12 weitere Zeilen (gekürzt für Klickdummy)</td>
+</tr>
+</tbody>
+</table>
+<div style="font-size: 11px; color: var(--color-text-secondary); margin-top: 8px;">* Anteils-Schnappschuss zum Versand-Stichtag eingefroren — Top 14 ging am 01.05. ins Eigentum von Bauer über</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-card">
+<h3 class="kd-title" style="margin: 0 0 8px;">Dokumente</h3>
+<div class="kd-row" onclick="toast('Beschlussvorlage 2026/03 öffnen — Master-PDF mit eingebettetem QR-Code (Beschluss-ID + Eigentümer-ID je Versand-Variante).')">
+<i class="ti ti-file-text" style="font-size: 16px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Beschlussvorlage (Master)</div><div style="font-size: 11px; color: var(--color-text-secondary);">PDF · QR-codiert</div></div>
+</div>
+<div class="kd-row" onclick="toast('18 personalisierte Versand-Dokumente mit individuellem QR-Code je Eigentümer.')">
+<i class="ti ti-files" style="font-size: 16px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Personalisierte Versand-PDFs</div><div style="font-size: 11px; color: var(--color-text-secondary);">18 Dokumente</div></div>
+</div>
+<div class="kd-row" onclick="toast('14 signierte Rücklauf-Dokumente · 13× QES automatisch validiert, 1× Papier-Rücklauf zur Prüfung.')">
+<i class="ti ti-files" style="font-size: 16px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Rücklauf-Dokumente</div><div style="font-size: 11px; color: var(--color-text-secondary);">14 Eingänge · 13× QES validiert</div></div>
+</div>
+</div>
+<div class="kd-card">
+<h3 class="kd-title" style="margin: 0 0 8px;">Auslagen (durchlaufender Posten)</h3>
+<div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 8px;">Einschreibgebühren werden 1:1 an die Papier-Eigentümer weiterverrechnet, ohne USt-Ausweis (§6 UStG)</div>
+<div class="kd-row" onclick="toast('Post-AG Sammelrechnung April: 2 Einschreiben für diesen Beschluss · € 14 · gebucht 30.04.')">
+<i class="ti ti-receipt" style="font-size: 16px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Eingang Post-AG</div><div style="font-size: 11px; color: var(--color-text-secondary);">2 Einschreiben · € 14</div></div>
+<span style="font-size: 11px; color: var(--color-text-success);">gebucht</span>
+</div>
+<div class="kd-row" onclick="toast('Sondervorschreibung an Pötzelsberger generiert nach Beschluss-Abschluss · € 7 · keine USt · ohne Bearbeitungsgebühr.')">
+<i class="ti ti-file-invoice" style="font-size: 16px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Sondervorschr. Top 7 Pötzelsberger</div><div style="font-size: 11px; color: var(--color-text-secondary);">€ 7 · nach Abschluss</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">geplant</span>
+</div>
+<div class="kd-row" onclick="toast('Sondervorschreibung an zweiten Papier-Eigentümer · € 7 · nach Abschluss.')">
+<i class="ti ti-file-invoice" style="font-size: 16px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Sondervorschr. Top 19 Berger</div><div style="font-size: 11px; color: var(--color-text-secondary);">€ 7 · nach Abschluss</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">geplant</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+<button onclick="toast('Erinnerung an die 4 nicht-abgestimmten Eigentümer — Portal-Push und E-Mail.')">Erinnerung versenden</button>
+<button onclick="toast('Frist verlängern bis 26.05.2026 · alle Eigentümer werden informiert.')">Frist verlängern</button>
+<button class="kd-primary" onclick="toast('Auszählung gestartet · 13 QES-Stimmen automatisch übernommen · 1 Papier-Rücklauf manuell zu prüfen.'); setTimeout(function(){goTo('beschluss-papier')}, 1500);">Frühzeitig auszählen</button>
+</div>
+</section>
+
+<section class="kd-view" data-view="beschluss-papier">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px;">
+<span style="cursor: pointer; color: var(--color-text-info);" onclick="goTo('beschluss')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Umlaufbeschluss 2026/03</span>
+<span style="opacity: 0.5;">/</span><span>Papier-Rücklauf prüfen</span>
+</div>
+<div style="margin-bottom: 1.1rem;">
+<h2 style="margin: 0 0 4px; font-size: 18px; font-weight: 500;">Papier-Rücklauf prüfen — Top 7 Pötzelsberger</h2>
+<div style="font-size: 13px; color: var(--color-text-secondary);">Workitem 05-2026/214 · eingelangt per Post 12.05.2026 · QR automatisch zugeordnet</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.1rem;">
+<div class="kd-card">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+<h3 class="kd-title">Eingelangtes Dokument</h3>
+<span style="font-size: 11px; color: var(--color-text-secondary);">Scan · QR erkannt</span>
+</div>
+<div class="kd-pdf">
+<i class="ti ti-file-text" style="font-size: 28px;" aria-hidden="true"></i>
+<span>Beschluss-2026-03_Top07_signiert.pdf</span>
+<span style="font-size: 11px;">QR: 2026-03 / Top07 / Pötzelsberger</span>
+</div>
+<div style="margin-top: 10px; font-size: 12px;">
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">Eingangskanal</span><span class="kd-val">Post (Einschreiben mit Rückschein)</span></div>
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">Versand-Dokument</span><span class="kd-val" style="color: var(--color-text-info); cursor: pointer;" onclick="toast('Versand-Dokument öffnen — identisch in Inhalt und QR-Code mit Rücklauf.')">vergleichen</span></div>
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">Versandtag</span><span class="kd-val">28.04.2026</span></div>
+<div style="display: flex; justify-content: space-between; padding: 3px 0;"><span class="kd-key">Eingangstag</span><span class="kd-val">12.05.2026 (Fristwahrend)</span></div>
+</div>
+</div>
+<div class="kd-card">
+<h3 class="kd-title" style="margin: 0 0 10px;">Stimme erfassen</h3>
+<div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px;">Ankreuzfeld auf zurückgesandtem Dokument visuell prüfen und übernehmen</div>
+<div style="display: flex; flex-direction: column; gap: 9px;">
+<div><label class="kd-label">Stimme laut Ankreuzfeld</label>
+<select class="kd-select">
+<option>Ja</option><option>Nein</option><option>Enthaltung</option><option>ungültig (mehrfach angekreuzt)</option><option>ungültig (nicht erkennbar)</option>
+</select></div>
+<div><label class="kd-label">Eigenhändige Unterschrift erkennbar</label>
+<select class="kd-select"><option>Ja, mit Vergleichs-Unterschrift im Personenakt übereinstimmend</option><option>Ja, ohne Vergleich</option><option>Nein</option></select></div>
+<div><label class="kd-label">Anmerkung (optional)</label><input class="kd-input" placeholder="z. B. Begründung des Eigentümers"></div>
+<div style="padding: 8px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); font-size: 11px; color: var(--color-text-secondary);">Anteil zum Versand-Stichtag 28.04.: <strong style="color: var(--color-text-primary);">132/3456</strong> — eingefroren, unabhängig von späterem Eigentümerwechsel</div>
+</div>
+</div>
+</div>
+
+<div class="kd-card" style="margin-bottom: 1.1rem;">
+<h3 class="kd-title" style="margin: 0 0 8px;">Hinweise aus dem System</h3>
+<div style="font-size: 12px; line-height: 1.6;">
+<div style="display: flex; gap: 8px; align-items: flex-start; padding: 4px 0;"><i class="ti ti-check" style="color: var(--color-text-success); margin-top: 2px;" aria-hidden="true"></i><span>QR-Code valide · Versand-Dokument-GUID stimmt überein · keine Manipulation des Originals</span></div>
+<div style="display: flex; gap: 8px; align-items: flex-start; padding: 4px 0;"><i class="ti ti-check" style="color: var(--color-text-success); margin-top: 2px;" aria-hidden="true"></i><span>Eingang innerhalb der Frist (12.05. ≤ 19.05.)</span></div>
+<div style="display: flex; gap: 8px; align-items: flex-start; padding: 4px 0;"><i class="ti ti-info-circle" style="color: var(--color-text-info); margin-top: 2px;" aria-hidden="true"></i><span>Auslagen-Position € 7 wartet auf Beschluss-Abschluss zur Sondervorschreibungs-Generierung</span></div>
+</div>
+</div>
+
+<div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+<button onclick="toast('Rückfrage an Eigentümer — Workitem bleibt offen, Stimme wird nicht gezählt.')">Rückfrage</button>
+<button onclick="toast('Stimme als ungültig markiert — wird nicht in Auszählung berücksichtigt.')">Als ungültig verwerfen</button>
+<button class="kd-primary" onclick="toast('Stimme übernommen · Prüfer + Zeitstempel an Versand-Liste protokolliert · Workitem geschlossen.'); setTimeout(function(){goTo('beschluss')}, 1500);">Stimme übernehmen</button>
+</div>
+</section>
+
+<section class="kd-view" data-view="portal">
+<div class="kd-banner" style="margin-bottom: 12px;"><span><i class="ti ti-shield-check" aria-hidden="true"></i> Angemeldet mit ID Austria</span><span style="cursor: pointer; color: var(--color-text-info);" onclick="toast('Alternativer Login mit Benutzername und Passwort ist mit demselben Portal-Konto verknüpft.')">Loginwege verwalten</span></div>
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px;">
+<i class="ti ti-eye" aria-hidden="true"></i> Außenansicht — so sieht die Eigentümerin das Portal
+</div>
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.1rem;">
+<div style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-background-info); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 14px; color: var(--color-text-info);">AM</div>
+<div><h2 style="margin: 0; font-size: 18px; font-weight: 500;">Anna Müller</h2><div style="font-size: 13px; color: var(--color-text-secondary);">Top 5, Mariahilfer Straße 123 · 145/3456 Anteile</div></div>
+</div>
+<div class="kd-card" style="margin-bottom: 1.1rem;">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;"><h3 class="kd-title">Vorschreibungen &amp; Zahlungen</h3><span style="font-size: 11px; color: var(--color-text-secondary);">€ 2.234 offen</span></div>
+<div class="kd-row" onclick="toast('Vorschreibung Juni 2026 · freigegebene PDF-Version herunterladen.')"><i class="ti ti-file-invoice" style="font-size: 18px; color: var(--color-text-secondary);"></i><div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Vorschreibung Juni 2026</div><div style="font-size: 11px; color: var(--color-text-secondary);">Soll/offen € 850 · fällig 05.06.</div></div><span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">offen · nicht fällig</span></div>
+<div class="kd-row" onclick="toast('Soll € 318 · bezahlt € 100 am 15.05. · Rest € 218 ist fällig. Das PDF bleibt unverändert.')"><i class="ti ti-progress" style="font-size: 18px; color: var(--color-text-warning);"></i><div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Nachzahlung Jahresabrechnung 2025</div><div style="font-size: 11px; color: var(--color-text-secondary);">Soll € 318 · bezahlt € 100 · offen € 218</div></div><span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">teilbezahlt · fällig</span></div>
+<div class="kd-row" onclick="toast('Vorschreibung Mai 2026: € 850 vollständig bezahlt am 03.05.2026.')"><i class="ti ti-circle-check" style="font-size: 18px; color: var(--color-text-success);"></i><div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Vorschreibung Mai 2026</div><div style="font-size: 11px; color: var(--color-text-secondary);">Soll € 850 · bezahlt € 850 am 03.05.</div></div><span class="kd-pill" style="background: var(--color-background-success); color: var(--color-text-success);">bezahlt</span></div>
+<div class="kd-row" onclick="toast('Sondervorschreibung Lift: € 2.016 offen und seit 20.05. fällig.')"><i class="ti ti-alert-circle" style="font-size: 18px; color: var(--color-text-danger);"></i><div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Sondervorschreibung Liftanlage</div><div style="font-size: 11px; color: var(--color-text-secondary);">Soll/offen € 2.016 · fällig seit 20.05.</div></div><span class="kd-pill" style="background: var(--color-background-danger); color: var(--color-text-danger);">offen · fällig</span></div>
+<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; flex-wrap: wrap;"><button onclick="toast('Freigegebene Vorschreibungs-PDFs werden zum Download zusammengestellt.')">PDFs herunterladen</button><button class="kd-primary" onclick="toast('Sichere Checkout-Session für aktuell € 2.234 erstellt. Status ändert sich erst nach serverseitiger Zahlungsbestätigung.')"><i class="ti ti-credit-card"></i> Jetzt € 2.234 bezahlen</button></div>
+</div>
+<div class="kd-card" style="margin-bottom: 1.1rem;">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;"><h3 class="kd-title">Meine Dokumente</h3><span style="font-size: 11px; color: var(--color-text-secondary);">letzte 12 Monate</span></div>
+<div class="kd-row" onclick="toast('Einzelabrechnung PDF öffnen — die Hausverwaltung sieht im Audit-Log, dass Sie sie geöffnet haben.')">
+<i class="ti ti-file-text" style="font-size: 18px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Jahresabrechnung 2025 — Einzelabrechnung</div><div style="font-size: 11px; color: var(--color-text-secondary);">12.05.2026 · PDF · Nachzahlung € 318</div></div>
+<span class="kd-pill" style="background: var(--color-background-info); color: var(--color-text-info);">neu</span>
+</div>
+<div class="kd-row" onclick="toast('Belegverzeichnis 2025 öffnen — jede Position verlinkt auf die im Dokumentmodul referenzierte Original-Eingangsrechnung.')">
+<i class="ti ti-folder" style="font-size: 18px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Belegverzeichnis 2025</div><div style="font-size: 11px; color: var(--color-text-secondary);">287 Belege · Einsicht direkt am Beleg</div></div>
+<i class="ti ti-chevron-right" style="font-size: 14px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+</div>
+<div class="kd-row" onclick="toast('Sondervorschreibung Lift: Ihr Anteil 145/3456 × 48.000 ≈ € 2.016. Zahlung in 3 Raten möglich.')">
+<i class="ti ti-file-text" style="font-size: 18px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Sondervorschreibung Sanierung Liftanlage</div><div style="font-size: 11px; color: var(--color-text-secondary);">05.05.2026 · € 2.016 · Beschluss 03.03.2026</div></div>
+<span class="kd-pill" style="background: var(--color-background-warning); color: var(--color-text-warning);">offen</span>
+</div>
+<div class="kd-row" onclick="toast('Beschluss-Protokoll Versammlung: 3 Beschlüsse, Anfechtungsfrist endet 28.05.2026.')">
+<i class="ti ti-file-text" style="font-size: 18px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Beschluss-Protokoll Versammlung 28.04.</div><div style="font-size: 11px; color: var(--color-text-secondary);">3 Beschlüsse · Anfechtungsfrist endet 28.05.</div></div>
+<i class="ti ti-chevron-right" style="font-size: 14px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+</div>
+<div class="kd-row" onclick="toast('Jahresabrechnung 2024: abgeschlossen, Guthaben überwiesen.')">
+<i class="ti ti-file-text" style="font-size: 18px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+<div style="flex: 1; min-width: 0;"><div style="font-size: 13px;">Jahresabrechnung 2024</div><div style="font-size: 11px; color: var(--color-text-secondary);">15.04.2025 · Guthaben € 142 ausbezahlt</div></div>
+<span style="font-size: 11px; color: var(--color-text-success);">abgeschlossen</span>
+</div>
+</div>
+<div class="kd-card">
+<h3 class="kd-title" style="margin: 0 0 10px;">Meine Liegenschaft</h3>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px;">
+<div><span class="kd-key">Adresse:</span> <span class="kd-val">Mariahilfer Straße 123</span></div>
+<div><span class="kd-key">EZ / KG:</span> <span class="kd-val">4521 / Mariahilf</span></div>
+<div><span class="kd-key">Top:</span> <span class="kd-val">5 (Wohnung)</span></div>
+<div><span class="kd-key">Anteile:</span> <span class="kd-val">145/3456</span></div>
+<div><span class="kd-key">Wohnfläche:</span> <span class="kd-val">87 m²</span></div>
+<div><span class="kd-key">Verwaltung:</span> <span class="kd-val">Beispiel GmbH</span></div>
+</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid var(--color-border-tertiary); font-size: 12px; color: var(--color-text-secondary);">Nächste Versammlung: 12.06.2026 · <span style="color: var(--color-text-info); cursor: pointer;" onclick="toast('Tagesordnung: 3 TOPs · Stimmrechtsvollmacht hinterlegbar.')">Tagesordnung ansehen</span></div>
+</div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function goTo(view) {
+  document.querySelectorAll('.kd-view').forEach(function(v) {
+    if (v.dataset.view === view) {
+      v.classList.add('active');
+      v.style.display = 'block';
+    } else {
+      v.classList.remove('active');
+      v.style.display = 'none';
+    }
+  });
+  document.querySelectorAll('#kd-nav button').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  var t = document.getElementById('kd-toast');
+  if (t) t.style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function toast(msg) {
+  var t = document.getElementById('kd-toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(window.__kdT);
+  window.__kdT = setTimeout(function(){ t.style.display = 'none'; }, 7000);
+}
+document.querySelectorAll('#kd-nav button').forEach(function(btn) {
+  btn.addEventListener('click', function() { goTo(btn.dataset.view); });
+});
+</script>
+
+</body>
+</html>
