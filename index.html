@@ -6,9 +6,9 @@
 <meta name="description" content="Interaktiver Klickdummy einer Hausverwaltungs-Fachapplikation mit Vorschreibungen, Zahlungen, Beschlüssen und Objektverwaltung.">
 <meta property="og:title" content="Hausverwaltung – Interaktiver Klickdummy">
 <meta property="og:description" content="Vorschreibungen, Zahlungen, Beschlüsse und Objektverwaltung interaktiv testen.">
-<meta property="og:image" content="https://fritzzetik.github.io/Hausverwaltung/og.png">
+<meta property="og:image" content="https://fritzzetik.github.io/Hausverwaltung-Klickdummy/og.png">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://fritzzetik.github.io/Hausverwaltung/">
+<meta property="og:url" content="https://fritzzetik.github.io/Hausverwaltung-Klickdummy/">
 <meta name="twitter:card" content="summary_large_image">
 <title>Klickdummy — Hausverwaltung</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css">
@@ -133,6 +133,19 @@ h2, h3 { color: var(--color-text-primary); }
   font-weight: 500; border-color: var(--color-border-secondary);
 }
 .kd-nav button:hover:not(.active) { background: var(--color-background-secondary); }
+.kd-role-gate { padding: 3rem 0 1.5rem; }
+.kd-role-gate h1 { max-width: 620px; margin: 0 0 10px; font-size: clamp(28px, 6vw, 46px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 650; }
+.kd-role-intro { max-width: 590px; margin: 0 0 2rem; color: var(--color-text-secondary); font-size: 16px; }
+.kd-role-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.kd-role-card { min-height: 220px; padding: 22px; text-align: left; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; }
+.kd-role-card:hover { background: var(--color-background-primary); border-color: var(--color-text-info); transform: translateY(-2px); }
+.kd-role-icon { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--color-background-info); color: var(--color-text-info); font-size: 22px; }
+.kd-role-title { display: block; margin: 18px 0 5px; font-size: 20px; font-weight: 600; }
+.kd-role-description { display: block; margin: 0; color: var(--color-text-secondary); font-size: 13px; }
+.kd-role-enter { margin-top: 22px; color: var(--color-text-info); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.kd-area-shell[hidden], .kd-nav[hidden] { display: none; }
+.kd-switch { padding: 4px 8px; font-size: 11px; border-color: var(--color-border-tertiary); }
+@media (max-width: 600px) { .kd-role-gate { padding-top: 2rem; } .kd-role-grid { grid-template-columns: 1fr; } .kd-role-card { min-height: 185px; } }
 .kd-card {
   background: var(--color-background-primary); border-radius: var(--border-radius-lg);
   border: 0.5px solid var(--color-border-tertiary); padding: 0.9rem 1rem;
@@ -185,34 +198,47 @@ h2, h3 { color: var(--color-text-primary); }
 <header class="page-header">
   <div class="page-header-inner">
     <strong>Klickdummy — Hausverwaltung</strong>
-    <span style="color: var(--color-text-secondary);">Prototyp · 8 Ansichten</span>
+    <span id="header-context" style="color: var(--color-text-secondary);">2 Bereiche · 8 Ansichten</span>
   </div>
 </header>
 
 <main class="page-content">
 
-<h2 class="sr-only">Klickdummy für die Hausverwaltung mit acht Ansichten: Portfolio, Liegenschafts-Cockpit, Beleg-Freigabe, Jahresabrechnung, Vorschreibungslauf, Umlaufbeschluss, Papier-Rücklauf und Eigentümer-Portal.</h2>
+<h2 class="sr-only">Klickdummy mit getrennten Bereichen für Mitarbeitende der Hausverwaltung sowie Eigentümer und Mieter im Kundenportal.</h2>
 
 <div class="kd-shell">
 
+<section class="kd-role-gate" id="role-gate">
+  <div style="font-size: 12px; color: var(--color-text-info); font-weight: 600; margin-bottom: 10px;">INTERAKTIVER PRODUKTPROTOTYP</div>
+  <h1>Welchen Bereich möchten Sie testen?</h1>
+  <p class="kd-role-intro">Die Fachanwendung und das Kundenportal sind bewusst getrennt. Wählen Sie Ihre Rolle, um mit der passenden Navigation und Sicht einzusteigen.</p>
+  <div class="kd-role-grid">
+    <button class="kd-role-card" type="button" onclick="enterArea('hv')"><span><span class="kd-role-icon"><i class="ti ti-building-community" aria-hidden="true"></i></span><span class="kd-role-title">Hausverwaltung</span><span class="kd-role-description">Portfolio, Liegenschaften, Belegfreigaben, Abrechnungen, Vorschreibungen und Beschlüsse bearbeiten.</span></span><span class="kd-role-enter">Fachanwendung öffnen <i class="ti ti-arrow-right" aria-hidden="true"></i></span></button>
+    <button class="kd-role-card" type="button" onclick="enterArea('portal')"><span><span class="kd-role-icon"><i class="ti ti-user-circle" aria-hidden="true"></i></span><span class="kd-role-title">Kundenportal</span><span class="kd-role-description">Als Eigentümer oder Mieter Vorschreibungen, Zahlungen, PDFs und Informationen zur Liegenschaft einsehen.</span></span><span class="kd-role-enter">Portal öffnen <i class="ti ti-arrow-right" aria-hidden="true"></i></span></button>
+  </div>
+</section>
+
+<div class="kd-area-shell" id="area-shell" hidden>
 <div class="kd-banner">
-<span style="display: flex; align-items: center; gap: 6px;"><i class="ti ti-flask" aria-hidden="true"></i> Klickdummy — Hausverwaltung</span>
-<span>PostgreSQL-MVP · 8 Ansichten</span>
+<span id="area-label" style="display: flex; align-items: center; gap: 6px;"><i class="ti ti-building-community" aria-hidden="true"></i> Fachanwendung Hausverwaltung</span>
+<span style="display: flex; align-items: center; gap: 8px;"><span id="area-meta">PostgreSQL-MVP · 7 Ansichten</span><button class="kd-switch" type="button" onclick="showRoleGate()"><i class="ti ti-switch-horizontal" aria-hidden="true"></i> Bereich wechseln</button></span>
 </div>
 
-<div class="kd-nav" id="kd-nav">
-<button data-view="portfolio" class="active"><i class="ti ti-buildings" aria-hidden="true"></i> Portfolio</button>
+<div class="kd-nav" id="kd-nav-hv">
+<button data-view="portfolio"><i class="ti ti-buildings" aria-hidden="true"></i> Portfolio</button>
 <button data-view="cockpit"><i class="ti ti-home" aria-hidden="true"></i> Liegenschaft</button>
 <button data-view="beleg"><i class="ti ti-file-invoice" aria-hidden="true"></i> Beleg-Freigabe</button>
 <button data-view="abrechnung"><i class="ti ti-report-money" aria-hidden="true"></i> Abrechnung</button>
 <button data-view="vorschreibung"><i class="ti ti-receipt-euro" aria-hidden="true"></i> Vorschreibungen</button>
 <button data-view="beschluss"><i class="ti ti-gavel" aria-hidden="true"></i> Umlaufbeschluss</button>
-<button data-view="portal"><i class="ti ti-user-circle" aria-hidden="true"></i> Portal-Sicht</button>
+</div>
+<div class="kd-nav" id="kd-nav-portal" hidden>
+<button data-view="portal"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Meine Übersicht</button>
 </div>
 
 <div class="kd-toast" id="kd-toast"></div>
 
-<section class="kd-view active" data-view="portfolio">
+<section class="kd-view" data-view="portfolio">
 <div style="margin-bottom: 1rem;">
 <h2 style="margin: 0 0 4px; font-size: 18px; font-weight: 500;">Portfolio</h2>
 <div style="font-size: 13px; color: var(--color-text-secondary);">4 Liegenschaften · 80 Objekte · 15 offene Workitems</div>
@@ -719,25 +745,44 @@ h2, h3 { color: var(--color-text-primary); }
 </section>
 
 </div>
+</div>
 
 </main>
 
 <script>
+var currentArea = null;
+function applyArea(area) {
+  currentArea = area;
+  document.getElementById('role-gate').hidden = true;
+  document.getElementById('area-shell').hidden = false;
+  var isPortal = area === 'portal';
+  document.getElementById('kd-nav-hv').hidden = isPortal;
+  document.getElementById('kd-nav-portal').hidden = !isPortal;
+  document.getElementById('area-label').innerHTML = isPortal ? '<i class="ti ti-user-circle" aria-hidden="true"></i> Kundenportal' : '<i class="ti ti-building-community" aria-hidden="true"></i> Fachanwendung Hausverwaltung';
+  document.getElementById('area-meta').textContent = isPortal ? 'Eigentümer & Mieter' : 'PostgreSQL-MVP · 7 Ansichten';
+  document.getElementById('header-context').textContent = isPortal ? 'Kundenportal' : 'Fachanwendung';
+}
+function enterArea(area) { applyArea(area); goTo(area === 'portal' ? 'portal' : 'portfolio'); }
+function showRoleGate() {
+  currentArea = null;
+  document.getElementById('role-gate').hidden = false;
+  document.getElementById('area-shell').hidden = true;
+  document.getElementById('header-context').textContent = '2 Bereiche · 8 Ansichten';
+  document.querySelectorAll('.kd-view').forEach(function(v) { v.classList.remove('active'); v.style.display = 'none'; });
+  history.replaceState(null, '', location.pathname + location.search);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 function goTo(view) {
+  var targetArea = view === 'portal' ? 'portal' : 'hv';
+  if (currentArea !== targetArea) applyArea(targetArea);
   document.querySelectorAll('.kd-view').forEach(function(v) {
-    if (v.dataset.view === view) {
-      v.classList.add('active');
-      v.style.display = 'block';
-    } else {
-      v.classList.remove('active');
-      v.style.display = 'none';
-    }
+    if (v.dataset.view === view) { v.classList.add('active'); v.style.display = 'block'; }
+    else { v.classList.remove('active'); v.style.display = 'none'; }
   });
-  document.querySelectorAll('#kd-nav button').forEach(function(b) {
-    b.classList.toggle('active', b.dataset.view === view);
-  });
+  document.querySelectorAll('.kd-nav button').forEach(function(b) { b.classList.toggle('active', b.dataset.view === view); });
   var t = document.getElementById('kd-toast');
   if (t) t.style.display = 'none';
+  history.replaceState(null, '', '#' + (targetArea === 'portal' ? 'portal' : 'hausverwaltung'));
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function toast(msg) {
@@ -748,9 +793,9 @@ function toast(msg) {
   clearTimeout(window.__kdT);
   window.__kdT = setTimeout(function(){ t.style.display = 'none'; }, 7000);
 }
-document.querySelectorAll('#kd-nav button').forEach(function(btn) {
-  btn.addEventListener('click', function() { goTo(btn.dataset.view); });
-});
+document.querySelectorAll('.kd-nav button').forEach(function(btn) { btn.addEventListener('click', function() { goTo(btn.dataset.view); }); });
+if (location.hash === '#hausverwaltung') enterArea('hv');
+if (location.hash === '#portal') enterArea('portal');
 </script>
 
 </body>
